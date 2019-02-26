@@ -1,0 +1,41 @@
+fragment_program HMDGenericAutoScalingFrag glsl
+{
+  source HMDGenericAutoScaling.frag.glsl
+  entry_point main
+  profiles fp40
+}
+
+vertex_program HMDGenericAutoScalingVert glsl
+{
+  source HMDGenericAutoScaling.vert.glsl
+  entry_point main
+  profiles vp40
+}
+
+material HMDGenericAutoScaling
+{
+        technique
+        {
+                pass
+                {
+                        depth_check off
+
+                        vertex_program_ref HMDGenericAutoScalingVert
+                        {
+                        }
+
+                        fragment_program_ref HMDGenericAutoScalingFrag
+                        {
+                          param_named_auto viewportSize viewport_size
+                        }
+
+            			texture_unit
+            			{
+            				texture RT
+            				tex_coord_set 0
+            				tex_address_mode clamp
+            				filtering linear linear none
+            			}
+                }
+        }
+}
