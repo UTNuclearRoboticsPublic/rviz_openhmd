@@ -129,7 +129,7 @@ void OpenhmdDisplay::onInitialize()
 
     // Spawn position of the cameras
     // This can be used to manipulate the initial point of view
-    mCamera->setPosition(Ogre::Vector3(0,0,10));
+    mCamera->setPosition(Ogre::Vector3(0,0,0));
     std::cout << "Cameras Created" << std::endl;
 
     // Setup OpenHMD object
