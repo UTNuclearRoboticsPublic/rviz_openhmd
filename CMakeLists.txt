@@ -39,10 +39,10 @@ project(rviz_openhmd)
 
 # This assums that there was a global install or installed in ~/OpenHMD
 find_path (OpenHMD_INCLUDES openhmd.h
-  PATHS /usr/local/include /usr/include /sw/include $ENV{HOME}/OpenHMD/include
+  PATHS /usr/local/include /usr/include /sw/include $ENV{OPENHMD_INSTALL_DEST}/include
   )
 find_library (OpenHMD_LIBRARIES libopenhmd.so
-  PATHS /usr/local/lib /usr/lib /lib /sw/lib $ENV{HOME}/OpenHMD/src/.libs
+  PATHS /usr/local/lib /usr/lib /lib /sw/lib $ENV{OPENHMD_INSTALL_DEST}/src/.libs
   )
 
 include_directories(${OpenHMD_INCLUDES})
