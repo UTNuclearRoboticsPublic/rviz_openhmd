@@ -70,7 +70,7 @@ void OpenhmdDisplay::onInitialize()
     // Setup resources for compositors
     // For different headsets, different compositors are needed
     // Change this line to point to the resources.cfg file
-    mResourcesCfg = "/home/beathan/rviz_openhmd/src/resources.cfg";
+    mResourcesCfg = "/home/base/catkin_ws/src/rviz_openhmd/src/resources.cfg";
     Ogre::ConfigFile cf;
 
     // Load config file
@@ -114,7 +114,7 @@ void OpenhmdDisplay::onInitialize()
     // Create a render window for the HMD
     // Window size is set here and may need to be adjusted
     root = rviz::RenderSystem::get()->root();
-    mWindow = root->createRenderWindow("VRwindow", 2000, 1000, true);
+    mWindow = root->createRenderWindow("VRwindow", 2160, 1200, true);
     std::cout << "Render window created" << std::endl;
 
     // Create the camera node
@@ -130,6 +130,7 @@ void OpenhmdDisplay::onInitialize()
     // Spawn position of the cameras
     // This can be used to manipulate the initial point of view
     mCamera->setPosition(Ogre::Vector3(0,0,0));
+    mCamera->setOrientation(Ogre::Quaternion(0.7071, 0.7071, 0, 0)); // rotate cameras by 90 degrees
     std::cout << "Cameras Created" << std::endl;
 
     // Setup OpenHMD object
