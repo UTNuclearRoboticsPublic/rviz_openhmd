@@ -62,6 +62,25 @@ OpenhmdDisplay::~OpenhmdDisplay()
 /************ To instantiate the objects needed ************/
 void OpenhmdDisplay::onInitialize()
 {   
+
+/*
+initialize openhmd and check numeber of headsets
+set up ogre resources
+branch on num hmds
+    initialize one window
+    initialize two window
+
+*/
+
+    // TODO: this needs to be first in initialize
+    // Setup OpenHMD object
+    openhmd = new OpenHMD();
+    // TODO: check the return value and respond accordingly
+    // return -1, error
+    // return 1, 1 hmd
+    // return 2, 2 hmds
+    NumHMDs = openhmd->init();
+
     // Set up general objects
     mDispCtx = context_;  // rviz object
     mSceneMgr = scene_manager_;  // ogre objects
@@ -78,7 +97,6 @@ void OpenhmdDisplay::onInitialize()
 
     // Load resource paths from config file
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-
     Ogre::String secName, typeName, archName;
     while (seci.hasMoreElements()) 
     {
@@ -96,17 +114,6 @@ void OpenhmdDisplay::onInitialize()
                 archName, typeName, secName);
         }
     }
-
-    // Debugging checks
-    if (Ogre::ResourceGroupManager::getSingleton().resourceExists("OpenHMD", "HMD.compositor")) 
-        std::cout << "YEET!" << std::endl;
-    else 
-        std::cout << "Your resource does not exist" << std::endl;
-
-    if (Ogre::ResourceGroupManager::getSingleton().isResourceGroupInitialised("OpenHMD"))
-        std::cout << "YEEZUS!" << std::endl;
-    else 
-        std::cout << "OpenHMD is not initialized" << std::endl;
     
     // Required to use resources when loaded after Ogre::root init
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("OpenHMD");
@@ -114,7 +121,8 @@ void OpenhmdDisplay::onInitialize()
     // Create a render window for the HMD
     // Window size is set here and may need to be adjusted
     root = rviz::RenderSystem::get()->root();
-    mWindow = root->createRenderWindow("VRwindow", 2160, 1200, true);
+    mWindow = root->createRenderWindow("HMD1window", 2160, 1200, false);
+    mWindow2 = root->createRenderWindow("HMD2window", 2160, 1200, false);
     std::cout << "Render window created" << std::endl;
 
     // Create the camera node
@@ -123,96 +131,90 @@ void OpenhmdDisplay::onInitialize()
     else
         mCamera = mSceneMgr->getRootSceneNode()->createChildSceneNode("StereoCameraNode");
 
-    // Create the cameras, will act as the eyes
+    // Create the cameras for hmd1, will act as the eyes
     stereo_cam_left = mSceneMgr->createCamera("StereoCameraLeft");
     stereo_cam_right = mSceneMgr->createCamera("StereoCameraRight");
+    // Create the cameras for hmd2, will act as the eyes
+    stereo_cam_left2 = mSceneMgr->createCamera("StereoCameraLeft");
+    stereo_cam_right2 = mSceneMgr->createCamera("StereoCameraRight");
 
     // Spawn position of the cameras
     // This can be used to manipulate the initial point of view
+    // For hmd1
     mCamera->setPosition(Ogre::Vector3(0,0,0));
     mCamera->setOrientation(Ogre::Quaternion(0.7071, 0.7071, 0, 0)); // rotate cameras by 90 degrees
+    // For hmd2
+    mCamera2->setPosition(Ogre::Vector3(0,0,0));
+    mCamera2->setOrientation(Ogre::Quaternion(0.7071, 0.7071, 0, 0)); // rotate cameras by 90 degrees
     std::cout << "Cameras Created" << std::endl;
-
-    // Setup OpenHMD object
-    openhmd = new OpenHMD();
-    openhmd->init();
 
     // Set the orientation of the cameras position
     stereo_cam_left->setPosition(openhmd->getLeftViewMatrix().getTrans());
     stereo_cam_right->setPosition(openhmd->getRightViewMatrix().getTrans());
+    // For hmd2 Set the orientation of the cameras position
+    stereo_cam_left2->setPosition(openhmd->getLeftViewMatrix().getTrans());
+    stereo_cam_right2->setPosition(openhmd->getRightViewMatrix().getTrans());
 
     // Set clip distances (something to do with focus I think)
     stereo_cam_left->setNearClipDistance(0.000012);
     stereo_cam_left->setFarClipDistance(200*120);
     stereo_cam_right->setNearClipDistance(0.000012);
     stereo_cam_right->setFarClipDistance(200*120);
+    // For hmd2
+    stereo_cam_left2->setNearClipDistance(0.000012);
+    stereo_cam_left2->setFarClipDistance(200*120);
+    stereo_cam_right2->setNearClipDistance(0.000012);
+    stereo_cam_right2->setFarClipDistance(200*120);
     std::cout << "Cameras positioned" << std::endl;
 
     // Put the cameras on the camera node
     stereo_cam_left->detachFromParent();
     stereo_cam_right->detachFromParent();
+    // For hmd2
+    stereo_cam_left2->detachFromParent();
+    stereo_cam_right2->detachFromParent();
 
     mCamera->attachObject(stereo_cam_left);
     mCamera->attachObject(stereo_cam_right);
+    // For hmd2
+    mCamera2->attachObject(stereo_cam_left2);
+    mCamera2->attachObject(stereo_cam_right2);
 
     // Setup viewports
     mWindow->removeAllViewports();
     leftVP = mWindow->addViewport(stereo_cam_left, 1, 0, 0, 0.5f, 1.0f);
     rightVP = mWindow->addViewport(stereo_cam_right, 2, 0.5f, 0, 0.5f, 1.0f);
+    // For hmd2
+    mWindow2->removeAllViewports();
+    leftVP2 = mWindow2->addViewport(stereo_cam_left2, 1, 0, 0, 0.5f, 1.0f);
+    rightVP2 = mWindow2->addViewport(stereo_cam_right2, 2, 0.5f, 0, 0.5f, 1.0f);
+    std::cout << "Viewports added to window" << std::endl;
 
-    // Debugging checks
-    if(leftVP == NULL) 
-        std::cout << "leftVP is NULL!!!" << std::endl;
-    else {
-        // leftVP->setBackgroundColour(Ogre::ColourValue(0.145f, 0.25f, 0.4f));
-        // rightVP->setBackgroundColour(Ogre::ColourValue(0.145f, 0.25f, 0.4f));
-        std::cout << "Viewports added to window" << std::endl;
-    }
-
-    // Get physical screen resolution and use closest available compositor with stretching
-    Ogre::Vector2 hmdScreenSize = openhmd->getScreenSize();
-
-    // Choose which compositor to use (vive should be "HMD/GenericAutoScaling")
+    // Assumes we are using the HTC Vive, else a different compositor should be added and used
     if (!openhmd->isDummy())
     {
-        if (hmdScreenSize[0] == 1280 && hmdScreenSize[1] == 800) //assume Oculus DK1 shader
-        {
-            Ogre::CompositorInstance* leftComp = Ogre::CompositorManager::getSingletonPtr()->addCompositor(leftVP, "HMD/OculusDK1");
-            Ogre::CompositorInstance* rightComp = Ogre::CompositorManager::getSingletonPtr()->addCompositor(rightVP, "HMD/OculusDK1");
-            leftComp->setEnabled(true);
-            rightComp->setEnabled(true);
-        }
-        else if (hmdScreenSize[0] == 1920 && hmdScreenSize[1] == 1080) //assume Oculus DK2 shader
-        {
-            Ogre::CompositorInstance* leftComp = Ogre::CompositorManager::getSingletonPtr()->addCompositor(leftVP, "HMD/OculusDK2");
-            Ogre::CompositorInstance* rightComp = Ogre::CompositorManager::getSingletonPtr()->addCompositor(rightVP, "HMD/OculusDK2");
-            leftComp->setEnabled(true);
-            rightComp->setEnabled(true);
-        }
-        else
-        {
-            std::cout << "HMD generic" << std::endl;
-            Ogre::CompositorInstance* leftComp = Ogre::CompositorManager::getSingletonPtr()->addCompositor(leftVP, "HMD/GenericAutoScaling");
-            Ogre::CompositorInstance* rightComp = Ogre::CompositorManager::getSingletonPtr()->addCompositor(rightVP, "HMD/GenericAutoScaling");
-
-            // Debugging checks
-            if(leftComp == NULL)
-                std::cout << "leftComp is NULL" << std::endl;
-            else {
-                std::cout << "Enabling compositors" << std::endl;
-                // Enable the compositors to show images
-                leftComp->setEnabled(true);
-                rightComp->setEnabled(true);
-            }
-        }
+        std::cout << "HMD generic" << std::endl;
+        Ogre::CompositorInstance* leftComp = Ogre::CompositorManager::getSingletonPtr()->addCompositor(leftVP, "HMD/GenericAutoScaling");
+        Ogre::CompositorInstance* rightComp = Ogre::CompositorManager::getSingletonPtr()->addCompositor(rightVP, "HMD/GenericAutoScaling");
+        std::cout << "Enabling compositors" << std::endl;
+        // Enable the compositors to show images
+        leftComp->setEnabled(true);
+        rightComp->setEnabled(true);
     }
     else
     {
+        // TODO: decide what to do if there is no hmd
+        // probably throw an error but dont break system
         std::cout << "HMD is a dummy" << std::endl;
         Ogre::CompositorInstance* leftComp = Ogre::CompositorManager::getSingletonPtr()->addCompositor(leftVP, "HMD/GenericAutoScaling");
         Ogre::CompositorInstance* rightComp = Ogre::CompositorManager::getSingletonPtr()->addCompositor(rightVP, "HMD/GenericAutoScaling");
         leftComp->setEnabled(true);
         rightComp->setEnabled(true);
+        // For hmd2
+        Ogre::CompositorInstance* leftComp2 = Ogre::CompositorManager::getSingletonPtr()->addCompositor(leftVP2, "HMD/GenericAutoScaling");
+        Ogre::CompositorInstance* rightComp2 = Ogre::CompositorManager::getSingletonPtr()->addCompositor(rightVP2, "HMD/GenericAutoScaling");
+        leftComp2->setEnabled(true);
+        rightComp2->setEnabled(true);
     }
     std::cout << "HMD fully initialized" << std::endl;
 }
@@ -222,6 +224,7 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
 {
     // Force update the render window
     mWindow->update();
+    mWindow2->update();
 
     // Update HMD
     openhmd->update();
@@ -235,6 +238,12 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     // std::cout << oculusCameraOrientation << std::endl;
     stereo_cam_left->setOrientation(oculusCameraOrientation);
     stereo_cam_right->setOrientation(oculusCameraOrientation);
+
+    // Get the orientation to update cameras
+    Ogre::Quaternion oculusCameraOrientation2 = openhmd->getQuaternion2();
+    // std::cout << oculusCameraOrientation << std::endl;
+    stereo_cam_left2->setOrientation(oculusCameraOrientation2);
+    stereo_cam_right2->setOrientation(oculusCameraOrientation2);
 }
 
 /************ Empty display reset ************/

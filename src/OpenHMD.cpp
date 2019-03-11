@@ -12,6 +12,8 @@ OpenHMD::OpenHMD()
 {
     ctx = NULL;
     hmd = NULL;
+    // need 2 hmd variables
+    hmd2 = NULL;
 }
 
 int OpenHMD::init()
@@ -26,6 +28,10 @@ int OpenHMD::init()
 
 	printf("num devices: %d\n", num_devices);
 
+	// if num_devices == 5, assume 1 hmd, index 0
+
+	// if num_devices == 6, assume 2 hmds, index 0 and 1
+
 	for(unsigned int i = 0; i < num_devices; i++)
 	{
 		printf("vendor: %s\n", ohmd_list_gets(ctx, i, OHMD_VENDOR));
@@ -34,27 +40,33 @@ int OpenHMD::init()
 	}
 
 	hmd = ohmd_list_open_device(ctx, 0);
+	if(num_devices == 6) hmd2 = ohmd_list_open_device(ctx, 1);
 
-	ohmd_device_geti(hmd, OHMD_SCREEN_HORIZONTAL_RESOLUTION, &ival);
-	printf("hres: %i\n", ival);
-	ohmd_device_geti(hmd, OHMD_SCREEN_VERTICAL_RESOLUTION, &ival);
-	printf("vres: %i\n", ival);
+	// ohmd_device_geti(hmd, OHMD_SCREEN_HORIZONTAL_RESOLUTION, &ival);
+	// printf("hres: %i\n", ival);
+	// ohmd_device_geti(hmd, OHMD_SCREEN_VERTICAL_RESOLUTION, &ival);
+	// printf("vres: %i\n", ival);
 
-	ohmd_device_getf(hmd, OHMD_SCREEN_HORIZONTAL_SIZE, &fval);
-	printf("hsize: %f\n", fval);
-	ohmd_device_getf(hmd, OHMD_SCREEN_VERTICAL_SIZE, &fval);
-	printf("vsize: %f\n", fval);
+	// ohmd_device_getf(hmd, OHMD_SCREEN_HORIZONTAL_SIZE, &fval);
+	// printf("hsize: %f\n", fval);
+	// ohmd_device_getf(hmd, OHMD_SCREEN_VERTICAL_SIZE, &fval);
+	// printf("vsize: %f\n", fval);
 
-	ohmd_device_getf(hmd, OHMD_LENS_HORIZONTAL_SEPARATION, &fval);
-	printf("lens seperation: %f\n", fval);
-	ohmd_device_getf(hmd, OHMD_LENS_VERTICAL_POSITION, &fval);
-	printf("lens vcenter: %f\n", fval);
-	ohmd_device_getf(hmd, OHMD_LEFT_EYE_FOV, &fval);
-	printf("fov: %f\n", fval);
-	ohmd_device_getf(hmd, OHMD_LEFT_EYE_ASPECT_RATIO, &fval);
-	printf("aspect: %f\n", fval);
+	// ohmd_device_getf(hmd, OHMD_LENS_HORIZONTAL_SEPARATION, &fval);
+	// printf("lens seperation: %f\n", fval);
+	// ohmd_device_getf(hmd, OHMD_LENS_VERTICAL_POSITION, &fval);
+	// printf("lens vcenter: %f\n", fval);
+	// ohmd_device_getf(hmd, OHMD_LEFT_EYE_FOV, &fval);
+	// printf("fov: %f\n", fval);
+	// ohmd_device_getf(hmd, OHMD_LEFT_EYE_ASPECT_RATIO, &fval);
+	// printf("aspect: %f\n", fval);
 
 	if(!hmd)
+	{
+		printf("failed to open device: %s\n", ohmd_ctx_get_error(ctx));
+		return -1;
+	}
+	if(num_devices == 6 && !hmd2)
 	{
 		printf("failed to open device: %s\n", ohmd_ctx_get_error(ctx));
 		return -1;
@@ -75,6 +87,8 @@ void OpenHMD::update()
 		ohmd_ctx_update(ctx);
 }
 
+
+// TODO: add second func
 Ogre::Quaternion OpenHMD::getQuaternion()
 {
     float qu[4];
@@ -84,6 +98,16 @@ Ogre::Quaternion OpenHMD::getQuaternion()
     return returnquad;
 }
 
+Ogre::Quaternion OpenHMD::getQuaternion2()
+{
+    float qu[4];
+    ohmd_ctx_update(ctx);
+    ohmd_device_getf(hmd2, OHMD_ROTATION_QUAT, qu);
+    Ogre::Quaternion returnquad = Ogre::Quaternion(qu[3],qu[0],qu[1],qu[2]);
+    return returnquad;
+}
+
+// NOTE: assumes both hmd are same model, these functions will only pull from one hmd
 Ogre::Vector2 OpenHMD::getScreenSize()
 {
 	Ogre::Vector2 screenSize;

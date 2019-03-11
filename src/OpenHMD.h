@@ -23,6 +23,7 @@ public:
 	void getVerbose();
 	std::string getProduct();
 	Ogre::Quaternion getQuaternion();
+	Ogre::Quaternion getQuaternion2();
 	Ogre::Vector2 getScreenSize();
 	Ogre::Matrix4 getLeftViewMatrix();
 	Ogre::Matrix4 getLeftProjectionMatrix();
@@ -37,6 +38,7 @@ public:
 private:
 	ohmd_context* ctx;
 	ohmd_device* hmd;
+	ohmd_device* hmd2;
 };
 
 #endif

@@ -78,20 +78,27 @@ public:
 private:
     // OGRE Objects
     Ogre::SceneNode* mCamera;
+    Ogre::SceneNode* mCamera2;
     Ogre::SceneManager* mSceneMgr;
     Ogre::RenderWindow* mWindow;
+    Ogre::RenderWindow* mWindow2;
     Ogre::String mResourcesCfg;
     Ogre::String mPluginsCfg;
     Ogre::Root* root;
     Ogre::Camera* stereo_cam_left;
     Ogre::Camera* stereo_cam_right;
+    Ogre::Camera* stereo_cam_left2;
+    Ogre::Camera* stereo_cam_right2;
     Ogre::Viewport* leftVP;
     Ogre::Viewport* rightVP;
+    Ogre::Viewport* leftVP2;
+    Ogre::Viewport* rightVP2;
     Ogre::SceneNode* mSceneNode;
     Ogre::SceneManager* _pSceneManager;
 
     //OpenHMD objects
     OpenHMD* openhmd;
+    int NumHMDs;
 
     // Rviz stuff
     rviz::DisplayContext* mDispCtx;
