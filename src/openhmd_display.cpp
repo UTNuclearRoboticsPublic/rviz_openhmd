@@ -121,8 +121,8 @@ branch on num hmds
     // Create a render window for the HMD
     // Window size is set here and may need to be adjusted
     root = rviz::RenderSystem::get()->root();
-    mWindow = root->createRenderWindow("HMD1window", 2160, 1200, false);
-    mWindow2 = root->createRenderWindow("HMD2window", 2160, 1200, false);
+    mWindow = root->createRenderWindow("HMD1", 2160, 1200, false);
+    mWindow2 = root->createRenderWindow("HMD2", 2160, 1200, false);
     std::cout << "Render window created" << std::endl;
 
     // Create the camera node
@@ -131,12 +131,17 @@ branch on num hmds
     else
         mCamera = mSceneMgr->getRootSceneNode()->createChildSceneNode("StereoCameraNode");
 
+    if (mSceneNode)
+        mCamera2 = mSceneNode->createChildSceneNode("StereoCameraNode2");
+    else
+        mCamera2 = mSceneMgr->getRootSceneNode()->createChildSceneNode("StereoCameraNode2");
+
     // Create the cameras for hmd1, will act as the eyes
     stereo_cam_left = mSceneMgr->createCamera("StereoCameraLeft");
     stereo_cam_right = mSceneMgr->createCamera("StereoCameraRight");
     // Create the cameras for hmd2, will act as the eyes
-    stereo_cam_left2 = mSceneMgr->createCamera("StereoCameraLeft");
-    stereo_cam_right2 = mSceneMgr->createCamera("StereoCameraRight");
+    stereo_cam_left2 = mSceneMgr->createCamera("StereoCameraLeft2");
+    stereo_cam_right2 = mSceneMgr->createCamera("StereoCameraRight2");
 
     // Spawn position of the cameras
     // This can be used to manipulate the initial point of view
@@ -197,9 +202,15 @@ branch on num hmds
         Ogre::CompositorInstance* leftComp = Ogre::CompositorManager::getSingletonPtr()->addCompositor(leftVP, "HMD/GenericAutoScaling");
         Ogre::CompositorInstance* rightComp = Ogre::CompositorManager::getSingletonPtr()->addCompositor(rightVP, "HMD/GenericAutoScaling");
         std::cout << "Enabling compositors" << std::endl;
+        if (!leftComp) std::cout << "why is it null" << std::endl;
         // Enable the compositors to show images
         leftComp->setEnabled(true);
         rightComp->setEnabled(true);
+        // For hmd2
+        Ogre::CompositorInstance* leftComp2 = Ogre::CompositorManager::getSingletonPtr()->addCompositor(leftVP2, "HMD/GenericAutoScaling");
+        Ogre::CompositorInstance* rightComp2 = Ogre::CompositorManager::getSingletonPtr()->addCompositor(rightVP2, "HMD/GenericAutoScaling");
+        leftComp2->setEnabled(true);
+        rightComp2->setEnabled(true);
     }
     else
     {
