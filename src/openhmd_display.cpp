@@ -69,8 +69,8 @@ set up ogre resources
 branch on num hmds
     initialize one window
     initialize two window
-
 */
+    mResourcesCfg = "/home/base/catkin_ws/src/rviz_openhmd/src/resources.cfg";
 
     // TODO: this needs to be first in initialize
     // Setup OpenHMD object
@@ -267,8 +267,18 @@ branch on num hmds
 void OpenhmdDisplay::update(float wall_dt, float ros_dr)
 {
     // Force update the render window
+    if (mWindow == NULL) {
+        std::cout << "Window 1 is NULL" << std::endl;
+    }
     mWindow->update();
-    mWindow2->update();
+
+    if (NumHMDs == 2)
+    {
+        if (mWindow2 == NULL) {
+            std::cout << "Window 2 is NULL" << std::endl;
+        }
+        mWindow2->update();
+    }
 
     // Update HMD
     openhmd->update();
@@ -277,11 +287,13 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix().transpose());
     stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix().transpose());
 
+
     // Get the orientation to update cameras
     Ogre::Quaternion oculusCameraOrientation = openhmd->getQuaternion();
     // std::cout << oculusCameraOrientation << std::endl;
     stereo_cam_left->setOrientation(oculusCameraOrientation);
     stereo_cam_right->setOrientation(oculusCameraOrientation);
+
 
     if (NumHMDs == 2)
     {
@@ -291,6 +303,7 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
         stereo_cam_left2->setOrientation(oculusCameraOrientation2);
         stereo_cam_right2->setOrientation(oculusCameraOrientation2);
     }
+
 }
 
 /************ Empty display reset ************/
