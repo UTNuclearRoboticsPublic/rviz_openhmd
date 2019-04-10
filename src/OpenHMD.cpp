@@ -71,8 +71,9 @@ int OpenHMD::init()
 		printf("failed to open device: %s\n", ohmd_ctx_get_error(ctx));
 		return -1;
 	}
-
-	return 1;
+    
+    if (num_devices == 6) return 2;
+    else return 1;
 }
 
 void OpenHMD::exit()
