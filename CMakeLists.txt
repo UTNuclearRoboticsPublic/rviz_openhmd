@@ -34,10 +34,10 @@
 cmake_minimum_required(VERSION 3.1.0)
 project(rviz_openhmd)
 
-#INCLUDE_DIRECTORIES(/usr/local/include/openhmd)
-#LINK_DIRECTORIES(/usr/local/lib)
-
-# This assums that there was a global install or installed in ~/OpenHMD
+# This assumes that you are using the provided binary files.
+# The binary was compiled form OpenHMD prject commit: 4ca169b
+# To use newer versions of OpenHMD, simply compile your library and
+# copy the binary and header into rviz_openhmd/OpenHMD in this repo. 
 find_path (OpenHMD_INCLUDES openhmd.h
   PATHS ${CMAKE_CURRENT_SOURCE_DIR}/OpenHMD 
   )
@@ -45,13 +45,14 @@ find_library (OpenHMD_LIBRARIES libopenhmd.so
   PATHS ${CMAKE_CURRENT_SOURCE_DIR}/OpenHMD
   )
 
+# Include the files we found
 include_directories(${OpenHMD_INCLUDES})
 link_libraries(${OpenHMD_LIBRARIES})
-
 
 link_directories(${CMAKE_BINARY_DIR})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 
+# Find and link the rviz library
 find_package(catkin REQUIRED COMPONENTS rviz)
 catkin_package()
 include_directories(${catkin_INCLUDE_DIRS})
@@ -77,10 +78,13 @@ endif()
 
 add_definitions(-DQT_NO_KEYWORDS)
 
+# Add source files for compiling
 set(SRC_FILES src/openhmd_display.cpp src/OpenHMD.cpp)
 
+# Add the library that will be made for the plugin
 add_library(${PROJECT_NAME} ${SRC_FILES})
 
+# Link all libraries into this one
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${catkin_LIBRARIES} ${OpenHMD_LIBRARIES} ${SDL2_LIBRARY} ${GLEW_LIBRARIES})
 
 ## Install rules

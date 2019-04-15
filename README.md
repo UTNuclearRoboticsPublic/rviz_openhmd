@@ -5,7 +5,7 @@ This plugin was created for use in a University of Texas at Austin Neuclear Robo
 
 ## Requirements
 Several smaller libraries are needed by these dependencies, but these are the major parts that are used.
-* [openhmd](https://github.com/OpenHMD/OpenHMD) and accompanying requirements
+* [openhmd](https://github.com/OpenHMD/OpenHMD) This has been precompiled and is provided under /OpenHMD
 * [hidapi](https://packages.debian.org/source/jessie/hidapi)
 * [ROS Kinetic](http://wiki.ros.org/kinetic)
 * [OGRE 3D](https://www.ogre3d.org/)
@@ -27,6 +27,13 @@ Several smaller libraries are needed by these dependencies, but these are the ma
 Note: Only a mini-display to display cable will work for display ports.
 
 Note: If you are having error in headset tracking, check your system [udev rules](https://github.com/OpenHMD/OpenHMD/wiki/Udev-rules-list).
+
+## Further Development
+To further the plugin's ability using the developing OpenHMD library, you will likely need to compile and provide the OpenHMD binary yourself. We providing an [older version](https://github.com/OpenHMD/OpenHMD/tree/4ca169b49ab4ea4bee2a8ea519d9ba8dcf662bd5) of OpenHMD. As they further development and more features become available, or if you have your own version of their library, simply compile and copy the .so file and corresponding header to /OpenHMD in this repo. This will allow the CMakeLists.txt file to find your binary. Alternatively, you can directly edit CMakeLists.txt to find your version of the library. We are providing the binary for convenience and to allow 'plug and play' to the project.
+
+For now the project supports a maximum of 2 headsets. We are looking into ways to properly position windows automatically, but for now you will have to move the compositor window into your headset manually. As OpenHMD does not actually support 2 headsets at once, we are using a workaround to make things happen. If you see a better way for positioning windows, let us know or make a pull request!
+
+We hope to find drivers for the vive controllers as well. This will require implementing both the controllers and the base stations to give positional data. Currently the only way to do this we have seen is to go through Steam. Again, let us know if you have any ideas on how to further this development.
 
 ## Troubleshooting
 1. The USB on the HTC Vive (and potentially others) can be finicky. Try using a different USB port if you are still having issues after setting udev rules.
