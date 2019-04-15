@@ -15,7 +15,7 @@ Several smaller libraries are needed by these dependencies, but these are the ma
 ## Installation
 1. Clone the repository directly into your catkin/src workspace.
 2. Check that line 73 in src/openhmd_display.cpp points to the correct location.
-3. Chech that line 3 in src/resources.cfg points to the correct location.
+3. Check that line 3 in src/resources.cfg points to the correct location.
 4. Use `catkin_make` or `catkin build` to compile.
 
 ## Use
