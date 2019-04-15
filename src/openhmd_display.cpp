@@ -70,7 +70,7 @@ branch on num hmds
     initialize one window
     initialize two window
 */
-    mResourcesCfg = "/home/base/catkin_ws/src/rviz_openhmd/src/resources.cfg";
+    mResourcesCfg = "/home/$USER/catkin_ws/src/rviz_openhmd/src/resources.cfg";
 
     // TODO: this needs to be first in initialize
     // Setup OpenHMD object
