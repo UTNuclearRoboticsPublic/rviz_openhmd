@@ -39,10 +39,10 @@ project(rviz_openhmd)
 # To use newer versions of OpenHMD, simply compile your library and
 # copy the binary and header into rviz_openhmd/OpenHMD in this repo. 
 find_path (OpenHMD_INCLUDES openhmd.h
-  PATHS ${CMAKE_CURRENT_SOURCE_DIR}/OpenHMD 
+  PATHS ${CMAKE_CURRENT_SOURCE_DIR}/OpenHMD /usr/local/include /usr/include /sw/include
   )
 find_library (OpenHMD_LIBRARIES libopenhmd.so
-  PATHS ${CMAKE_CURRENT_SOURCE_DIR}/OpenHMD
+  PATHS ${CMAKE_CURRENT_SOURCE_DIR}/OpenHMD /usr/local/lib /usr/lib /lib /sw/lib
   )
 
 # Include the files we found
