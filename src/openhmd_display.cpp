@@ -189,6 +189,9 @@ branch on num hmds
         stereo_cam_right2->setNearClipDistance(0.000012);
         stereo_cam_right2->setFarClipDistance(200*120);
     }
+    // ROS tf frame
+    hmd_pose.header.frame_id = "base_link";
+    hmd_pose.child_frame_id = "hmd";
     std::cout << "Cameras positioned" << std::endl;
 
     // Put the cameras on the camera node
@@ -294,6 +297,16 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     stereo_cam_left->setOrientation(oculusCameraOrientation);
     stereo_cam_right->setOrientation(oculusCameraOrientation);
 
+    // Publish camera pose as ROS tf frame
+    // Requires a 90* rotation about X
+    tf2::Quaternion q_rot;
+    q_rot.setRPY(1.5707, 0, -1.5707);
+    tf2::Quaternion q(oculusCameraOrientation.x, oculusCameraOrientation.y, oculusCameraOrientation.z, oculusCameraOrientation.w);
+    q = q_rot * q;
+    q.normalize();
+    tf2::convert(q, hmd_pose.transform.rotation);
+    hmd_pose.header.stamp = ros::Time::now();
+    tf_br.sendTransform(hmd_pose);
 
     if (NumHMDs == 2)
     {
