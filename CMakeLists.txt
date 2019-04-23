@@ -53,8 +53,15 @@ link_directories(${CMAKE_BINARY_DIR})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 
 # Find and link the rviz library
-find_package(catkin REQUIRED COMPONENTS rviz)
-catkin_package()
+find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  rviz
+  tf2
+  tf2_ros
+)
+catkin_package(
+  CATKIN_DEPENDS geometry_msgs rviz tf2 tf2_ros
+)
 include_directories(${catkin_INCLUDE_DIRS})
 link_directories(${catkin_LIBRARY_DIRS})
 

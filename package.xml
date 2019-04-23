@@ -42,9 +42,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>roscpp</build_depend>
-  <run_depend>roscpp</run_depend>
-  
+  <build_depend>boost</build_depend>
+  <run_depend>boost</run_depend>
+
+  <build_depend>geometry_msgs</build_depend>
+  <run_depend>geometry_msgs</run_depend>
+
   <build_depend>libogre-dev</build_depend>
   <run_depend>libogre-dev</run_depend>
 
@@ -54,14 +57,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <build_depend>libqt4-opengl-dev</build_depend>
   <run_depend>libqt4-opengl-dev</run_depend>
 
-  <build_depend>boost</build_depend>
-  <run_depend>boost</run_depend>
+  <build_depend>roscpp</build_depend>
+  <run_depend>roscpp</run_depend>
 
   <build_depend>rviz</build_depend>
   <run_depend>rviz</run_depend>
 
-  <build_depend>tf</build_depend>
-  <run_depend>tf</run_depend>
+  <build_depend>tf2</build_depend>
+  <run_depend>tf2</run_depend>
+
+  <build_depend>tf2_ros</build_depend>
+  <run_depend>tf2_ros</run_depend>
 
   <export>
      <rviz plugin="${prefix}/plugin_description.xml"/>

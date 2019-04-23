@@ -14,6 +14,10 @@ OpenHMD::OpenHMD()
     hmd = NULL;
     // need 2 hmd variables
     hmd2 = NULL;
+
+    // ROS tf frame
+    hmd_pose.header.frame_id = "base_link";
+    hmd_pose.child_frame_id = "hmd";
 }
 
 int OpenHMD::init()
@@ -86,6 +90,11 @@ void OpenHMD::update()
 {
 	if (ctx)
 		ohmd_ctx_update(ctx);
+
+	// Publish a ROS tf frame
+	hmd_pose.transform.rotation.w = 1;
+	hmd_pose.header.stamp = ros::Time::now();
+	tf_br.sendTransform(hmd_pose);
 }
 
 

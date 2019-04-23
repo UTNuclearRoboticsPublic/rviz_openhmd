@@ -13,6 +13,12 @@
 #include <OgreMath.h>
 #include <OgreVector2.h>
 
+// ROS Integration
+#include <geometry_msgs/TransformStamped.h>
+#include <ros/ros.h>
+#include <tf2_ros/transform_broadcaster.h>
+
+
 class OpenHMD
 {
 public:
@@ -39,6 +45,9 @@ private:
 	ohmd_context* ctx;
 	ohmd_device* hmd;
 	ohmd_device* hmd2;
+
+	tf2_ros::TransformBroadcaster tf_br;
+    geometry_msgs::TransformStamped hmd_pose;
 };
 
 #endif
