@@ -22,6 +22,7 @@ public:
 	void update();
 	void getVerbose();
 	std::string getProduct();
+	std::vector<float> getPosition();
 	Ogre::Quaternion getQuaternion();
 	Ogre::Quaternion getQuaternion2();
 	Ogre::Vector2 getScreenSize();

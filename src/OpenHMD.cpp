@@ -88,8 +88,18 @@ void OpenHMD::update()
 		ohmd_ctx_update(ctx);
 }
 
+std::vector<float> OpenHMD::getPosition()
+{
+	float position[3];
+    ohmd_ctx_update(ctx);
+    ohmd_device_getf(hmd, OHMD_POSITION_VECTOR, position);
+    std::vector<float> returnvec(3);
+    returnvec[0] = position[0];
+    returnvec[1] = position[1];
+    returnvec[2] = position[2];
+	return returnvec;
+}
 
-// TODO: add second func
 Ogre::Quaternion OpenHMD::getQuaternion()
 {
     float qu[4];

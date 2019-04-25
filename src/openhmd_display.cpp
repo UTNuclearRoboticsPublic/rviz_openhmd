@@ -156,7 +156,7 @@ branch on num hmds
     // Spawn position of the cameras
     // This can be used to manipulate the initial point of view
     // For hmd1
-    mCamera->setPosition(Ogre::Vector3(0,0,0));
+    mCamera->setPosition(Ogre::Vector3(0,0,2));
     mCamera->setOrientation(Ogre::Quaternion(0.7071, 0.7071, 0, 0)); // rotate cameras by 90 degrees
     if (NumHMDs == 2)
     {
@@ -166,12 +166,12 @@ branch on num hmds
     }
     std::cout << "Cameras Created" << std::endl;
 
-    // Set the orientation of the cameras position
+    // Set the orientation of the cameras
     stereo_cam_left->setPosition(openhmd->getLeftViewMatrix().getTrans());
     stereo_cam_right->setPosition(openhmd->getRightViewMatrix().getTrans());
     if (NumHMDs == 2)
     {
-        // For hmd2 Set the orientation of the cameras position
+        // For hmd2 Set the orientation of the cameras
         stereo_cam_left2->setPosition(openhmd->getLeftViewMatrix().getTrans());
         stereo_cam_right2->setPosition(openhmd->getRightViewMatrix().getTrans());
     }
@@ -290,21 +290,23 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix().transpose());
     stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix().transpose());
 
-
     // Get the orientation to update cameras
     Ogre::Quaternion oculusCameraOrientation = openhmd->getQuaternion();
-    // std::cout << oculusCameraOrientation << std::endl;
     stereo_cam_left->setOrientation(oculusCameraOrientation);
     stereo_cam_right->setOrientation(oculusCameraOrientation);
 
     // Publish camera pose as ROS tf frame
-    // Requires a 90* rotation about X
+    // Requires a 90* rotation about X, -90* rot about Z
     tf2::Quaternion q_rot;
     q_rot.setRPY(1.5707, 0, -1.5707);
     tf2::Quaternion q(oculusCameraOrientation.x, oculusCameraOrientation.y, oculusCameraOrientation.z, oculusCameraOrientation.w);
     q = q_rot * q;
     q.normalize();
     tf2::convert(q, hmd_pose.transform.rotation);
+    auto position = openhmd->getPosition();
+    hmd_pose.transform.translation.x = position[0];
+    hmd_pose.transform.translation.y = position[1];
+    hmd_pose.transform.translation.z = position[2];
     hmd_pose.header.stamp = ros::Time::now();
     tf_br.sendTransform(hmd_pose);
 
