@@ -61,6 +61,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <OgreCompositorInstance.h>
 #include <OgreCompositorChain.h>
 
+// ROS tf frames
+#include <ros/ros.h>
+#include <tf2_ros/transform_listener.h>
+#include <geometry_msgs/TransformStamped.h>
+
 namespace rviz_openhmd
 {
 
@@ -104,6 +109,10 @@ private:
     rviz::DisplayContext* mDispCtx;
     static rviz::RenderSystem* mRendSys;
     rviz::DisplayContext* _pDisplayContext;
+
+    // ROS tf frames
+    tf2_ros::Buffer tfBuffer;
+    tf2_ros::TransformListener tfListener;
 };
 
 };

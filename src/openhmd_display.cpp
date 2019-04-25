@@ -49,7 +49,8 @@ namespace rviz_openhmd
 {
 
 /************ Constructor ************/
-OpenhmdDisplay::OpenhmdDisplay()
+OpenhmdDisplay::OpenhmdDisplay() :
+    tfListener(tfBuffer)
 {
 }
 
@@ -156,8 +157,8 @@ branch on num hmds
     // Spawn position of the cameras
     // This can be used to manipulate the initial point of view
     // For hmd1
-    mCamera->setPosition(Ogre::Vector3(0,0,0));
-    mCamera->setOrientation(Ogre::Quaternion(0.7071, 0.7071, 0, 0)); // rotate cameras by 90 degrees
+    //mCamera->setPosition(Ogre::Vector3(0,0,0));
+    //mCamera->setOrientation(Ogre::Quaternion(0.7071, 0.7071, 0, 0)); // rotate cameras by 90 degrees
     if (NumHMDs == 2)
     {
         // For hmd2
@@ -287,6 +288,16 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix().transpose());
     stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix().transpose());
 
+    // Get camera position from ROS
+    geometry_msgs::TransformStamped transformStamped;
+    try{
+      transformStamped = tfBuffer.lookupTransform("hmd", "lighthouse_0",
+                               ros::Time(0));
+    }
+    catch (tf2::TransformException &ex) {
+      printf("%s\n",ex.what());
+    }
+    std::cout << transformStamped.transform.translation.z << std::endl;
 
     // Get the orientation to update cameras
     Ogre::Quaternion oculusCameraOrientation = openhmd->getQuaternion();

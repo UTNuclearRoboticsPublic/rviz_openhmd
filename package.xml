@@ -60,8 +60,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <build_depend>rviz</build_depend>
   <run_depend>rviz</run_depend>
 
-  <build_depend>tf</build_depend>
-  <run_depend>tf</run_depend>
+  <build_depend>tf2_ros</build_depend>
+  <run_depend>tf2_ros</run_depend>
 
   <export>
      <rviz plugin="${prefix}/plugin_description.xml"/>
