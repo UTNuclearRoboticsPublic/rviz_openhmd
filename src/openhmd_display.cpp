@@ -297,7 +297,7 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     // Get camera position from ROS
     geometry_msgs::TransformStamped transformStamped;
     try{
-      transformStamped = tfBuffer.lookupTransform("rviz_openhmd", "lighthouse_0",
+      transformStamped = tfBuffer.lookupTransform("rviz_openhmd1", "lighthouse_0",
                                ros::Time(0));
     }
     catch (tf2::TransformException &ex) {
@@ -317,9 +317,21 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
 
     if (NumHMDs == 2)
     {
-        // Get the orientation to update cameras
+        // Get camera position from ROS
+        geometry_msgs::TransformStamped transformStamped;
+        try{
+          transformStamped = tfBuffer.lookupTransform("rviz_openhmd2", "lighthouse_0",
+                                   ros::Time(0));
+        }
+        catch (tf2::TransformException &ex) {
+          printf("%s\n",ex.what());
+        }
+        mCamera2->setPosition(Ogre::Vector3(transformStamped.transform.translation.x,
+                                            transformStamped.transform.translation.y,
+                                            transformStamped.transform.translation.z));
+
+        // Get the orientation from headset IMU
         Ogre::Quaternion oculusCameraOrientation2 = openhmd->getQuaternion2();
-        // std::cout << oculusCameraOrientation << std::endl;
         stereo_cam_left2->setOrientation(oculusCameraOrientation2);
         stereo_cam_right2->setOrientation(oculusCameraOrientation2);
     }
