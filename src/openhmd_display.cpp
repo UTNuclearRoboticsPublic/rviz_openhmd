@@ -157,8 +157,8 @@ branch on num hmds
     // Spawn position of the cameras
     // This can be used to manipulate the initial point of view
     // For hmd1
-    //mCamera->setPosition(Ogre::Vector3(0,0,0));
-    //mCamera->setOrientation(Ogre::Quaternion(0.7071, 0.7071, 0, 0)); // rotate cameras by 90 degrees
+    mCamera->setPosition(Ogre::Vector3(0,0,0));
+    mCamera->setOrientation(Ogre::Quaternion(0.7071, 0.7071, 0, 0)); // rotate cameras by 90 degrees
     if (NumHMDs == 2)
     {
         // For hmd2
@@ -167,12 +167,12 @@ branch on num hmds
     }
     std::cout << "Cameras Created" << std::endl;
 
-    // Set the orientation of the cameras position
+    // Set the orientation of the cameras
     stereo_cam_left->setPosition(openhmd->getLeftViewMatrix().getTrans());
     stereo_cam_right->setPosition(openhmd->getRightViewMatrix().getTrans());
     if (NumHMDs == 2)
     {
-        // For hmd2 Set the orientation of the cameras position
+        // For hmd2 Set the orientation of the cameras
         stereo_cam_left2->setPosition(openhmd->getLeftViewMatrix().getTrans());
         stereo_cam_right2->setPosition(openhmd->getRightViewMatrix().getTrans());
     }
@@ -288,18 +288,27 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix().transpose());
     stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix().transpose());
 
+    /////////////////////
+    // Update camera pose
+    /////////////////////
+    // Position comes from a ROS tf listener. This could be a static tf publisher in a launch file.
+    // Orientation comes from openhmd->getQuaternion(), which uses the headset IMU
+
     // Get camera position from ROS
     geometry_msgs::TransformStamped transformStamped;
     try{
-      transformStamped = tfBuffer.lookupTransform("hmd", "lighthouse_0",
+      transformStamped = tfBuffer.lookupTransform("rviz_openhmd", "lighthouse_0",
                                ros::Time(0));
     }
     catch (tf2::TransformException &ex) {
       printf("%s\n",ex.what());
     }
     std::cout << transformStamped.transform.translation.z << std::endl;
+    mCamera->setPosition(Ogre::Vector3(transformStamped.transform.translation.x,
+                                        transformStamped.transform.translation.y,
+                                        transformStamped.transform.translation.z));
 
-    // Get the orientation to update cameras
+    // Get the orientation from headset IMU
     Ogre::Quaternion oculusCameraOrientation = openhmd->getQuaternion();
     // std::cout << oculusCameraOrientation << std::endl;
     stereo_cam_left->setOrientation(oculusCameraOrientation);
