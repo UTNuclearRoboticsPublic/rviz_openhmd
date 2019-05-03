@@ -285,8 +285,8 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     openhmd->update();
 
     // Unknown for now
-    stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix().transpose());
-    stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix().transpose());
+    stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix()/*.transpose()*/);
+    stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix()/*.transpose()*/);
 
     /////////////////////
     // Update camera pose
