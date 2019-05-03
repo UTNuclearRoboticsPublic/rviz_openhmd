@@ -87,7 +87,6 @@ branch on num hmds
     }
 
     // Set up general objects
-    mDispCtx = context_;  // rviz object
     mSceneMgr = scene_manager_;  // ogre objects
     mSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 
@@ -285,8 +284,8 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     openhmd->update();
 
     // Unknown for now
-    stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix()/*.transpose()*/);
-    stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix()/*.transpose()*/);
+    stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix().transpose());
+    stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix().transpose());
 
     /////////////////////
     // Update camera pose
@@ -303,17 +302,14 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     catch (tf2::TransformException &ex) {
       printf("%s\n",ex.what());
     }
-    std::cout << transformStamped.transform.translation.z << std::endl;
     mCamera->setPosition(Ogre::Vector3(transformStamped.transform.translation.x,
-                                        transformStamped.transform.translation.y,
-                                        transformStamped.transform.translation.z));
+                                       transformStamped.transform.translation.y,
+                                       transformStamped.transform.translation.z));
 
     // Get the orientation from headset IMU
-    Ogre::Quaternion oculusCameraOrientation = openhmd->getQuaternion();
-    // std::cout << oculusCameraOrientation << std::endl;
-    stereo_cam_left->setOrientation(oculusCameraOrientation);
-    stereo_cam_right->setOrientation(oculusCameraOrientation);
-
+    Ogre::Quaternion cameraOrientation = openhmd->getQuaternion();
+    stereo_cam_left->setOrientation(cameraOrientation);
+    stereo_cam_right->setOrientation(cameraOrientation);
 
     if (NumHMDs == 2)
     {
@@ -331,9 +327,9 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
                                             transformStamped.transform.translation.z));
 
         // Get the orientation from headset IMU
-        Ogre::Quaternion oculusCameraOrientation2 = openhmd->getQuaternion2();
-        stereo_cam_left2->setOrientation(oculusCameraOrientation2);
-        stereo_cam_right2->setOrientation(oculusCameraOrientation2);
+        Ogre::Quaternion cameraOrientation2 = openhmd->getQuaternion2();
+        stereo_cam_left2->setOrientation(cameraOrientation2);
+        stereo_cam_right2->setOrientation(cameraOrientation2);
     }
 
 }

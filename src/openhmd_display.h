@@ -105,11 +105,6 @@ private:
     OpenHMD* openhmd;
     int NumHMDs;
 
-    // Rviz stuff
-    rviz::DisplayContext* mDispCtx;
-    static rviz::RenderSystem* mRendSys;
-    rviz::DisplayContext* _pDisplayContext;
-
     // ROS tf frames
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener;
