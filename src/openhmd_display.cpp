@@ -177,10 +177,10 @@ branch on num hmds
     }
 
     // Set clip distances (something to do with focus I think)
-    stereo_cam_left->setNearClipDistance(0.000012);
-    stereo_cam_left->setFarClipDistance(200*120);
-    stereo_cam_right->setNearClipDistance(0.000012);
-    stereo_cam_right->setFarClipDistance(200*120);
+    //stereo_cam_left->setNearClipDistance(0.000012);
+    //stereo_cam_left->setFarClipDistance(200*120);
+    //stereo_cam_right->setNearClipDistance(0.000012);
+    //stereo_cam_right->setFarClipDistance(200*120);
     if (NumHMDs == 2)
     {
         // For hmd2
@@ -210,7 +210,7 @@ branch on num hmds
         mCamera2->attachObject(stereo_cam_right2);
     }
 
-    // Setup viewports
+    // Setup viewports -- aka rendered windows on the HMD screen
     mWindow->removeAllViewports();
     leftVP = mWindow->addViewport(stereo_cam_left, 1, 0, 0, 0.5f, 1.0f);
     rightVP = mWindow->addViewport(stereo_cam_right, 2, 0.5f, 0, 0.5f, 1.0f);
@@ -280,13 +280,6 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
         mWindow2->update();
     }
 
-    // Update HMD
-    openhmd->update();
-
-    // Unknown for now
-    stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix().transpose());
-    stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix().transpose());
-
     /////////////////////
     // Update camera pose
     /////////////////////
@@ -306,7 +299,11 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
                                        transformStamped.transform.translation.y,
                                        transformStamped.transform.translation.z));
 
-    // Get the orientation from headset IMU
+    // Update HMD
+    openhmd->update();
+
+    stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix().transpose());
+    stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix().transpose());
     Ogre::Quaternion cameraOrientation = openhmd->getQuaternion();
     stereo_cam_left->setOrientation(cameraOrientation);
     stereo_cam_right->setOrientation(cameraOrientation);
