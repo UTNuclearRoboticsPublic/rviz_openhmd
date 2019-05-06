@@ -50,7 +50,8 @@ namespace rviz_openhmd
 
 /************ Constructor ************/
 OpenhmdDisplay::OpenhmdDisplay() :
-    tfListener(tfBuffer)
+    tfListener(tfBuffer),
+    qHmdToWorld(-0.5, -0.5, 0.5, 0.5) // -90* rot about X, 270* rot about Z
 {
 }
 
@@ -157,12 +158,12 @@ branch on num hmds
     // This can be used to manipulate the initial point of view
     // For hmd1
     mCamera->setPosition(Ogre::Vector3(0,0,0));
-    mCamera->setOrientation(Ogre::Quaternion(-0.5, -0.5, 0.5, 0.5));
+    mCamera->setOrientation(qHmdToWorld);
     if (NumHMDs == 2)
     {
         // For hmd2
         mCamera2->setPosition(Ogre::Vector3(0,0,0));
-        mCamera2->setOrientation(Ogre::Quaternion(-0.5, -0.5, 0.5, 0.5)); // Initial rotation
+        mCamera2->setOrientation(qHmdToWorld); // Initial rotation
     }
     std::cout << "Cameras Created" << std::endl;
 
@@ -295,9 +296,12 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     catch (tf2::TransformException &ex) {
       printf("%s\n",ex.what());
     }
-    mCamera->setPosition(Ogre::Vector3(transformStamped.transform.translation.x,
-                                       transformStamped.transform.translation.y,
-                                       transformStamped.transform.translation.z));
+    Ogre::Vector3 position(transformStamped.transform.translation.x,
+                            transformStamped.transform.translation.y,
+                            transformStamped.transform.translation.z);
+    // Transform this world coordinate to Hmd frame
+    position = qHmdToWorld.Inverse() * position;
+    mCamera->setPosition(position);
 
     // Update HMD
     openhmd->update();

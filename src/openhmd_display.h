@@ -100,6 +100,7 @@ private:
     Ogre::Viewport* rightVP2;
     Ogre::SceneNode* mSceneNode;
     Ogre::SceneManager* _pSceneManager;
+    Ogre::Quaternion qHmdToWorld;  // Rotation from headset to world frame
 
     //OpenHMD objects
     OpenHMD* openhmd;
