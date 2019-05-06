@@ -307,8 +307,13 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     stereo_cam_left->setOrientation(cameraOrientation);
     stereo_cam_right->setOrientation(cameraOrientation);
 
-    stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix().transpose());
-    stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix().transpose());
+    Ogre::Matrix4 left_projection_matrix = openhmd->getLeftProjectionMatrix().transpose();
+    Ogre::Matrix4 right_projection_matrix = openhmd->getRightProjectionMatrix().transpose();
+    //  Undo mirroring by flipping coordinates
+    left_projection_matrix[0][0] *= -1;
+    right_projection_matrix[0][0] *= -1;
+    stereo_cam_left->setCustomProjectionMatrix(true, left_projection_matrix);
+    stereo_cam_right->setCustomProjectionMatrix(true, right_projection_matrix);
 
     if (NumHMDs == 2)
     {
