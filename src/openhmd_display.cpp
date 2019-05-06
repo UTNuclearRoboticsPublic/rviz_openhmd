@@ -166,7 +166,7 @@ branch on num hmds
     }
     std::cout << "Cameras Created" << std::endl;
 
-    // Set the orientation of the cameras
+    // Set the position of the cameras
     stereo_cam_left->setPosition(openhmd->getLeftViewMatrix().getTrans());
     stereo_cam_right->setPosition(openhmd->getRightViewMatrix().getTrans());
     if (NumHMDs == 2)
@@ -176,11 +176,10 @@ branch on num hmds
         stereo_cam_right2->setPosition(openhmd->getRightViewMatrix().getTrans());
     }
 
-    // Set clip distances (something to do with focus I think)
-    //stereo_cam_left->setNearClipDistance(0.000012);
-    //stereo_cam_left->setFarClipDistance(200*120);
-    //stereo_cam_right->setNearClipDistance(0.000012);
-    //stereo_cam_right->setFarClipDistance(200*120);
+    stereo_cam_left->setNearClipDistance(0.000012);
+    stereo_cam_left->setFarClipDistance(200*120);
+    stereo_cam_right->setNearClipDistance(0.000012);
+    stereo_cam_right->setFarClipDistance(200*120);
     if (NumHMDs == 2)
     {
         // For hmd2
@@ -302,11 +301,13 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     // Update HMD
     openhmd->update();
 
-    stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix().transpose());
-    stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix().transpose());
+    // Camera orientation
     Ogre::Quaternion cameraOrientation = openhmd->getQuaternion();
     stereo_cam_left->setOrientation(cameraOrientation);
     stereo_cam_right->setOrientation(cameraOrientation);
+
+    stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix().transpose());
+    stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix().transpose());
 
     if (NumHMDs == 2)
     {
