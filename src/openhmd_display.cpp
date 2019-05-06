@@ -211,6 +211,7 @@ branch on num hmds
 
     // Setup viewports -- aka rendered windows on the HMD screen
     mWindow->removeAllViewports();
+    // 0.5 argument --> half of screen width
     leftVP = mWindow->addViewport(stereo_cam_left, 1, 0, 0, 0.5f, 1.0f);
     rightVP = mWindow->addViewport(stereo_cam_right, 2, 0.5f, 0, 0.5f, 1.0f);
     if (NumHMDs == 2)
