@@ -157,12 +157,12 @@ branch on num hmds
     // This can be used to manipulate the initial point of view
     // For hmd1
     mCamera->setPosition(Ogre::Vector3(0,0,0));
-    mCamera->setOrientation(Ogre::Quaternion(0.7071, 0.7071, 0, 0)); // rotate cameras by 90 degrees
+    mCamera->setOrientation(Ogre::Quaternion(-0.5, -0.5, 0.5, 0.5));
     if (NumHMDs == 2)
     {
         // For hmd2
         mCamera2->setPosition(Ogre::Vector3(0,0,0));
-        mCamera2->setOrientation(Ogre::Quaternion(0.7071, 0.7071, 0, 0)); // rotate cameras by 90 degrees
+        mCamera2->setOrientation(Ogre::Quaternion(-0.5, -0.5, 0.5, 0.5)); // Initial rotation
     }
     std::cout << "Cameras Created" << std::endl;
 
@@ -306,14 +306,6 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     Ogre::Quaternion cameraOrientation = openhmd->getQuaternion();
     stereo_cam_left->setOrientation(cameraOrientation);
     stereo_cam_right->setOrientation(cameraOrientation);
-
-    Ogre::Matrix4 left_projection_matrix = openhmd->getLeftProjectionMatrix().transpose();
-    Ogre::Matrix4 right_projection_matrix = openhmd->getRightProjectionMatrix().transpose();
-    //  Undo mirroring by flipping coordinates
-    left_projection_matrix[0][0] *= -1;
-    right_projection_matrix[0][0] *= -1;
-    stereo_cam_left->setCustomProjectionMatrix(true, left_projection_matrix);
-    stereo_cam_right->setCustomProjectionMatrix(true, right_projection_matrix);
 
     if (NumHMDs == 2)
     {
