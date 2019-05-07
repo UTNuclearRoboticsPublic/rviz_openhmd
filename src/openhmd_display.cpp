@@ -51,7 +51,7 @@ namespace rviz_openhmd
 /************ Constructor ************/
 OpenhmdDisplay::OpenhmdDisplay() :
     tfListener(tfBuffer),
-    qHmdToWorld(-0.5, -0.5, 0.5, 0.5) // -90* rot about X, 270* rot about Z
+    qHmdToWorld(-0.5, -0.5, 0.5, 0.5)  // -90* rot about X, 270* rot about Z
 {
 }
 
@@ -296,11 +296,9 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     catch (tf2::TransformException &ex) {
       printf("%s\n",ex.what());
     }
-    Ogre::Vector3 position(transformStamped.transform.translation.x,
-                            transformStamped.transform.translation.y,
-                            transformStamped.transform.translation.z);
-    // Transform this world coordinate to Hmd frame
-    position = qHmdToWorld.Inverse() * position;
+    Ogre::Vector3 position(-transformStamped.transform.translation.x,
+                            -transformStamped.transform.translation.y,
+                            -transformStamped.transform.translation.z);
     mCamera->setPosition(position);
 
     // Update HMD
