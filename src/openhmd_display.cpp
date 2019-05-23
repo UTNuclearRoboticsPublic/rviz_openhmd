@@ -290,7 +290,7 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     // Get camera position from ROS
     geometry_msgs::TransformStamped transformStamped;
     try{
-      transformStamped = tfBuffer.lookupTransform("hmd", "lighthouse0",
+      transformStamped = tfBuffer.lookupTransform("hmd", "base_link",
                                ros::Time(0));
     }
     catch (tf2::TransformException &ex) {
@@ -314,7 +314,7 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
         // Get camera position from ROS
         geometry_msgs::TransformStamped transformStamped;
         try{
-          transformStamped = tfBuffer.lookupTransform("hmd1", "lighthouse_0",
+          transformStamped = tfBuffer.lookupTransform("hmd1", "base_link",
                                    ros::Time(0));
         }
         catch (tf2::TransformException &ex) {
