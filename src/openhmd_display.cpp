@@ -72,7 +72,7 @@ branch on num hmds
     initialize one window
     initialize two window
 */
-    mResourcesCfg = "/home/me/Desktop/vr_moto/src/rviz_openhmd/src/resources.cfg";
+    mResourcesCfg = "/home/me/Desktop/catkin_ws/src/vr_moto/src/rviz_openhmd/src/resources.cfg";
 
     // TODO: this needs to be first in initialize
     // Setup OpenHMD object
@@ -94,7 +94,7 @@ branch on num hmds
     // Setup resources for compositors
     // For different headsets, different compositors are needed
     // Change this line to point to the resources.cfg file
-    mResourcesCfg = "/home/" + (std::string) std::getenv("USER") + "/Desktop/vr_moto/src/rviz_openhmd/src/resources.cfg";
+    mResourcesCfg = "/home/" + (std::string) std::getenv("USER") + "/Desktop/catkin_ws/src/vr_moto/src/rviz_openhmd/src/resources.cfg";
     Ogre::ConfigFile cf;
 
     // Load config file
