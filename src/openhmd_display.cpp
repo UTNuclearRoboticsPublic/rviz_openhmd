@@ -304,6 +304,9 @@ void OpenhmdDisplay::update(float wall_dt, float ros_dr)
     // Update HMD
     openhmd->update();
 
+    stereo_cam_left->setCustomProjectionMatrix(true, openhmd->getLeftProjectionMatrix().transpose());
+    stereo_cam_right->setCustomProjectionMatrix(true, openhmd->getRightProjectionMatrix().transpose());
+
     // Camera orientation
     Ogre::Quaternion cameraOrientation = openhmd->getQuaternion();
     stereo_cam_left->setOrientation(cameraOrientation);
