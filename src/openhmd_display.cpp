@@ -102,7 +102,8 @@ branch on num hmds
     // For different headsets, different compositors are needed
     // Change this line to point to the resources.cfg file
     std::string pkg_path = exec("catkin_find_pkg rviz_openhmd ~");
-    mResourcesCfg = "/home/" + (std::string) std::getenv("USER") + pkg_path + "src/resources.cfg";
+    pkg_path = pkg_path.substr(0, pkg_path.length() - 1);
+    mResourcesCfg = "/home/" + (std::string) std::getenv("USER") + "/" + pkg_path + "src/resources.cfg";
     Ogre::ConfigFile cf;
 
     // Load config file
