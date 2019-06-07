@@ -52,6 +52,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 const float g_defaultIPD = 0.064f;
 
+std::string exec(const char* cmd);
+
 namespace rviz_openhmd
 {
 
