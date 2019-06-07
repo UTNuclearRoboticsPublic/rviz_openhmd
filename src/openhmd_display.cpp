@@ -30,6 +30,13 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 
+#include <cstdio>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <array>
+
 #include "openhmd_display.h"
 
 #include <OGRE/OgreRoot.h>
@@ -72,8 +79,6 @@ branch on num hmds
     initialize one window
     initialize two window
 */
-    mResourcesCfg = "/home/me/Desktop/catkin_ws/src/vr_moto/src/rviz_openhmd/src/resources.cfg";
-
     // TODO: this needs to be first in initialize
     // Setup OpenHMD object
     openhmd = new OpenHMD();
@@ -94,7 +99,8 @@ branch on num hmds
     // Setup resources for compositors
     // For different headsets, different compositors are needed
     // Change this line to point to the resources.cfg file
-    mResourcesCfg = "/home/" + (std::string) std::getenv("USER") + "/Desktop/catkin_ws/src/vr_moto/src/rviz_openhmd/src/resources.cfg";
+    std::string pkg_path = exec("catkin_find_pkg rviz_openhmd ~");
+    mResourcesCfg = "/home/" + (std::string) std::getenv("USER") + pkg_path + "src/resources.cfg";
     Ogre::ConfigFile cf;
 
     // Load config file
@@ -344,3 +350,18 @@ void OpenhmdDisplay::reset()
 
 #include <pluginlib/class_list_macros.h>
 PLUGINLIB_EXPORT_CLASS(rviz_openhmd::OpenhmdDisplay, rviz::Display)
+
+
+
+std::string exec(const char* cmd) {
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
+}
