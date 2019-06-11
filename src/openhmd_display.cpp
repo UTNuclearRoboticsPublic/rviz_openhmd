@@ -66,10 +66,13 @@ OpenhmdDisplay::OpenhmdDisplay() :
 
 /************ Destructor ************/
 OpenhmdDisplay::~OpenhmdDisplay()
-{ delete openhmd; }
+{
+    delete openhmd;
+}
 
 /************ To instantiate the objects needed ************/
-void OpenhmdDisplay::onInitialize() {   
+void OpenhmdDisplay::onInitialize()
+{   
 
 /*
 initialize openhmd and check numeber of headsets
